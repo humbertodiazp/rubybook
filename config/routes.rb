@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'frrails/generate'
+  get 'frrails/controller'
+  get 'frrails/FriendRequests'
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -8,6 +11,8 @@ Rails.application.routes.draw do
 
   resources :users do
     resources :posts, only: [:index, :new, :create]
+    resources :friend_requests
+    resources :friendships
   end
 
   resources :posts, only: [:show, :edit, :update, :destroy] 
