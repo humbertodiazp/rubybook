@@ -7,6 +7,9 @@ class User < ApplicationRecord
   has_many :posts, foreign_key: :user_id
   has_many :friendships
   has_many :friends, through: :friendships
+  has_many :requested_friend_requests, foreign_key: :requester_id, class_name: "Friendship", dependent: :destroy
+  has_many :received_friend_requests, foreign_key: :receiver_id, class_name: "Friendship", dependent: :destroy
+
 
   validates :email, uniqueness: true
   validates :username, uniqueness: true
