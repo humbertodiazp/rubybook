@@ -1,0 +1,19 @@
+<!-- app/views/users/show.html.erb -->
+<h1><%= @user.name %></h1>
+
+<%= render partial: 'friends', locals: { friends: @friends } %>
+
+<h3>Sent Friend Requests</h3>
+<ul>
+  <% @sent_requests.each do |request| %>
+    <li><%= request.receiver.name %></li>
+  <% end %>
+</ul>
+
+<h3>Received Friend Requests</h3>
+<ul>
+  <% @received_requests.each do |request| %>
+    <li><%= request.requestor.name %></li>
+  <% end %>
+</ul>
+
