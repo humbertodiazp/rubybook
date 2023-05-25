@@ -14,21 +14,51 @@ class User < ApplicationRecord
   validates :email, uniqueness: true
   validates :username, uniqueness: true
 
-  def add_friend(user)
-    friends << user unless friends.include?(user)
+  def add_friend(friend)
+    friends << friend unless friends.include?(friend)
   end
 
-  def accept_friend_request
-    friend_request = FriendRequest.find(params[:friend_request_id])
+  def remove_friend(friend)
+    friends.delete(friend)
+  end
+
+  def send_friend_request(receiver)
+    sent_friend_requests.create(receiver: receiver)
+  end
+
+  def cancel_friend_request(receiver)
+    sent_friend_requests.find_by(receiver: receiver).destroy
+  end
+
+  def accept_friend_request(requestor)
+    request = received_friend_requests.find_by(requestor: requestor)
+    return unless request
+
+    friends << requestor
+    request.destroy
+  end
+
+  def accept_friend_request(friend_request)
     user = friend_request.requestor
     current_user.add_friend(user)
     friend_request.destroy
     # Handle the response or redirect as needed
   end
-  
-  def remove_friend(user)
-    friends.destroy(user)
+
+  def reject_friend_request(requestor)
+    request = received_friend_requests.find_by(requestor: requestor)
+    request&.destroy
   end
+
+  def pending_friend_requests
+    received_friend_requests.where(accepted: false)
+  end
+
+
+  
+  # def remove_friend(user)
+  #   friends.destroy(user)
+  # end
 
 
 
