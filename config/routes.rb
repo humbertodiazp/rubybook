@@ -1,13 +1,9 @@
 Rails.application.routes.draw do
-  get 'frrails/generate'
-  get 'frrails/controller'
-  get 'frrails/FriendRequests'
-  devise_for :users, controllers: {
-    sessions: 'users/sessions'
-  }  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  namespace :users do
+    get 'omniauth_callbacks/facebook'
+  end
 
-  # Defines the root path route ("/")
-  root "posts#index"
+  get 'users/omniauth_callbacks'
 
   resources :users do
     resources :posts, only: [:index, :new, :create]
@@ -15,5 +11,14 @@ Rails.application.routes.draw do
     resources :friendships
   end
 
+  resources :posts 
   resources :posts, only: [:show, :edit, :update, :destroy] 
+  devise_for:users 
+
+  # Defines the root path route ("/")
+  root 'posts#index'
+
+  devise_scope :user do
+    get "/users/auth/facebook/callback" => "users/omniauth_callbacks#facebook"
+  end
 end
