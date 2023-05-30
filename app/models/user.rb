@@ -18,6 +18,11 @@ class User < ApplicationRecord
     friends << friend unless friends.include?(friend)
   end
 
+  def all_friends
+    friends.select { |their| their.friends.include?(self) }
+  end
+
+
   def remove_friend(friend)
     friends.delete(friend)
   end
@@ -53,6 +58,12 @@ class User < ApplicationRecord
   def pending_friend_requests
     received_friend_requests.where(accepted: false)
   end
+
+  def feed
+    Post.where(['user_id = ? or user_id in (?)', id, active_friends.map(&:id)])
+        .order('created_at DESC')
+  end
+
 
   # omniauth 
   def self.new_with_session(params, session)
